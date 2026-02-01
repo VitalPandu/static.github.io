@@ -12,100 +12,90 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #f7c6d9, #fbe3ec);
+            background: #f5d6df;
             font-family: Arial, sans-serif;
             padding: 15px;
         }
 
+        /* Card */
         .card {
             width: 100%;
-            max-width: 420px;
-            padding: 25px;
+            max-width: 520px;
             background: white;
-            border-radius: 20px;
+            padding: 40px 25px;
+            border-radius: 22px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
             position: relative;
         }
 
+        /* Cat Emoji */
         .cat {
-            font-size: 50px;
-            margin-bottom: 10px;
+            font-size: 55px;
+            margin-bottom: 15px;
         }
 
+        /* Question */
         h2 {
-            margin-bottom: 25px;
-            font-size: 20px;
+            font-size: 26px;
+            margin-bottom: 35px;
         }
 
-        /* Buttons Container */
+        /* Buttons Row */
         .buttons {
             position: relative;
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 15px;
-            height: 110px;
+            gap: 30px;
+            height: 70px;
         }
 
-        /* YES Button Bigger */
+        /* YES Button */
         #yesBtn {
-            background: #ff4d79;
+            background: linear-gradient(180deg,#ff6b93,#ff3e73);
             color: white;
             border: none;
-            padding: 16px 34px;
+            padding: 14px 34px;
             font-size: 18px;
-            border-radius: 35px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            z-index: 2;
+            box-shadow: 0 6px 14px rgba(255,70,120,0.4);
         }
 
-        #yesBtn:active {
-            transform: scale(1.05);
-        }
-
-        /* NO Button Smaller */
+        /* NO Button */
         #noBtn {
-            position: absolute;
-            background: #eee;
+            background: #f1f1f1;
             border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 25px;
+            padding: 12px 28px;
+            font-size: 16px;
+            border-radius: 28px;
             cursor: pointer;
-            left: 58%;
-            top: 30px;
+            position: relative;
+        }
+
+        /* Helper Text */
+        .helper {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
         }
 
         /* GIF Section */
         #gifContainer {
-            margin-top: 20px;
             display: none;
+            margin-top: 25px;
         }
 
         #gifContainer img {
             width: 100%;
             max-width: 260px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border-radius: 14px;
         }
 
-        /* Small Mobile */
-        @media (max-width: 380px) {
-            h2 {
-                font-size: 18px;
-            }
-
-            #yesBtn {
-                padding: 14px 28px;
-                font-size: 16px;
-            }
-
-            #noBtn {
-                padding: 8px 18px;
-                font-size: 13px;
-            }
+        /* Mobile */
+        @media(max-width:420px){
+            h2 { font-size: 22px; }
+            .cat { font-size: 48px; }
         }
     </style>
 </head>
@@ -114,6 +104,7 @@
 
 <div class="card">
     <div class="cat">🐱💖</div>
+
     <h2>Stranger will you be my valentine?</h2>
 
     <div class="buttons">
@@ -121,10 +112,11 @@
         <button id="noBtn">No</button>
     </div>
 
+    <div class="helper">“No” seems a bit shy 😈</div>
+
     <div id="gifContainer">
         <img id="loveGif"
-             src="/mnt/data/A_GIF_features_a_white_cartoon_dog_and_a_yellow_ca.png"
-             alt="Love GIF">
+             src="yay.gif">
     </div>
 </div>
 
@@ -134,43 +126,52 @@
     const gifContainer = document.getElementById("gifContainer");
     const gif = document.getElementById("loveGif");
 
-    // Desktop hover
-    noBtn.addEventListener("mouseover", moveButton);
+    let flyingEnabled = false;
 
-    // Mobile touch
-    noBtn.addEventListener("touchstart", moveButton);
+    // Enable flying only after first hover
+    noBtn.addEventListener("mouseenter", () => {
+        flyingEnabled = true;
+    });
 
-    function moveButton() {
+    // Flying logic
+    noBtn.addEventListener("mousemove", () => {
+        if(!flyingEnabled) return;
+
         const card = document.querySelector(".card");
         const yesRect = yesBtn.getBoundingClientRect();
         const cardRect = card.getBoundingClientRect();
 
-        let randomX, randomY;
-        let overlap;
+        let x,y,overlap;
 
         do {
-            const maxX = card.offsetWidth - noBtn.offsetWidth - 10;
-            const maxY = 90;
+            const maxX = card.offsetWidth - noBtn.offsetWidth - 20;
+            const maxY = 120;
 
-            randomX = Math.random() * maxX;
-            randomY = Math.random() * maxY;
+            x = Math.random() * maxX;
+            y = Math.random() * maxY;
 
-            const noLeft = cardRect.left + randomX;
+            const noLeft = cardRect.left + x;
             const noRight = noLeft + noBtn.offsetWidth;
 
             overlap = !(noRight < yesRect.left || noLeft > yesRect.right);
 
-        } while (overlap);
+        } while(overlap);
 
-        noBtn.style.left = randomX + "px";
-        noBtn.style.top = randomY + "px";
-    }
+        noBtn.style.position = "absolute";
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+    });
 
-    // Yes click → show GIF
+    // Mobile support
+    noBtn.addEventListener("touchstart", () => {
+        flyingEnabled = true;
+    });
+
+    // Yes click
     yesBtn.addEventListener("click", () => {
         gifContainer.style.display = "block";
 
-        // Restart GIF animation
+        // Restart GIF
         const src = gif.src;
         gif.src = "";
         gif.src = src;
