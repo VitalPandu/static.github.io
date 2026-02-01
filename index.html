@@ -29,19 +29,17 @@
             position: relative;
         }
 
-        /* Cat Emoji */
         .cat {
             font-size: 55px;
             margin-bottom: 15px;
         }
 
-        /* Question */
         h2 {
             font-size: 26px;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
         }
 
-        /* Buttons Row */
+        /* Buttons */
         .buttons {
             position: relative;
             display: flex;
@@ -50,7 +48,6 @@
             height: 70px;
         }
 
-        /* YES Button */
         #yesBtn {
             background: linear-gradient(180deg,#ff6b93,#ff3e73);
             color: white;
@@ -62,7 +59,6 @@
             box-shadow: 0 6px 14px rgba(255,70,120,0.4);
         }
 
-        /* NO Button */
         #noBtn {
             background: #f1f1f1;
             border: none;
@@ -73,29 +69,33 @@
             position: relative;
         }
 
-        /* Helper Text */
         .helper {
             margin-top: 20px;
             font-size: 14px;
             color: #666;
         }
 
-        /* GIF Section */
-        #gifContainer {
+        /* YAY Section */
+        #yaySection {
             display: none;
-            margin-top: 25px;
+            margin-top: 20px;
+        }
+
+        .yayText {
+            font-size: 34px;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
 
         #gifContainer img {
             width: 100%;
-            max-width: 260px;
+            max-width: 280px;
             border-radius: 14px;
         }
 
-        /* Mobile */
         @media(max-width:420px){
             h2 { font-size: 22px; }
-            .cat { font-size: 48px; }
+            .yayText { font-size: 28px; }
         }
     </style>
 </head>
@@ -103,37 +103,47 @@
 <body>
 
 <div class="card">
+
     <div class="cat">🐱💖</div>
 
-    <h2>Stranger will you be my valentine?</h2>
+    <h2 id="questionText">Stranger will you be my valentine?</h2>
 
-    <div class="buttons">
+    <div class="buttons" id="buttonRow">
         <button id="yesBtn">Yes</button>
         <button id="noBtn">No</button>
     </div>
 
-    <div class="helper">“No” seems a bit shy 😈</div>
-
-    <div id="gifContainer">
-        <img id="loveGif"
-             src="yay.gif">
+    <div class="helper" id="helperText">
+        “No” seems a bit shy 😈
     </div>
+
+    <!-- YAY + GIF -->
+    <div id="yaySection">
+        <div class="yayText">YAY! 🎉</div>
+
+        <div id="gifContainer">
+            <img id="loveGif"
+                 src="yay.gif">
+        </div>
+    </div>
+
 </div>
 
 <script>
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
-    const gifContainer = document.getElementById("gifContainer");
+    const yaySection = document.getElementById("yaySection");
+    const buttonRow = document.getElementById("buttonRow");
+    const helperText = document.getElementById("helperText");
     const gif = document.getElementById("loveGif");
 
     let flyingEnabled = false;
 
-    // Enable flying only after first hover
+    /* Enable flying after first hover */
     noBtn.addEventListener("mouseenter", () => {
         flyingEnabled = true;
     });
 
-    // Flying logic
     noBtn.addEventListener("mousemove", () => {
         if(!flyingEnabled) return;
 
@@ -162,16 +172,22 @@
         noBtn.style.top = y + "px";
     });
 
-    // Mobile support
+    /* Mobile */
     noBtn.addEventListener("touchstart", () => {
         flyingEnabled = true;
     });
 
-    // Yes click
+    /* YES CLICK */
     yesBtn.addEventListener("click", () => {
-        gifContainer.style.display = "block";
 
-        // Restart GIF
+        /* Hide buttons + helper */
+        buttonRow.style.display = "none";
+        helperText.style.display = "none";
+
+        /* Show YAY section */
+        yaySection.style.display = "block";
+
+        /* Restart GIF */
         const src = gif.src;
         gif.src = "";
         gif.src = src;
